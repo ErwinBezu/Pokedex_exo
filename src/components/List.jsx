@@ -9,7 +9,7 @@ const List = ({pokemons}) => {
     return (
         <>
         <div>
-            <h2> il y a ({pokemons.lenght}) Pokemon{pokemons.length > 1 ? 's' : ''}) </h2>
+            <h2> il y a ({pokemons.length}) Pokemon{pokemons.length > 1 ? 's' : ''} </h2>
         </div>
         <ul>
             {pokemons.map((pokemon) =>(
