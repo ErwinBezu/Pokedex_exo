@@ -87,7 +87,7 @@ const App = () => {
         </div>
       )}
 
-      {loading && <LoadingSpinner message="Chargement des Pokémon depuis Tyradex..." />}
+      {loading && <LoadingSpinner message="Chargement des Pokémon..." />}
 
       {!loading && !error && (
         <div className="content-section">

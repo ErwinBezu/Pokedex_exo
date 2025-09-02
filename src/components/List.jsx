@@ -85,11 +85,11 @@ const List = ({ pokemons}) => {
                             <div className="physical-stats">
                                 <div className="stat-box">
                                     <span className="stat-label">Taille</span>
-                                    <div className="stat-value">{pokemon.height} m</div>
+                                    <div className="stat-value">{pokemon.height}</div>
                                 </div>
                                 <div className="stat-box">
                                     <span className="stat-label">Poids</span>
-                                    <div className="stat-value">{pokemon.weight} kg</div>
+                                    <div className="stat-value">{pokemon.weight}</div>
                                 </div>
                             </div>
                         )}

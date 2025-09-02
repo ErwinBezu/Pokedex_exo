@@ -36,7 +36,6 @@ export const usePokemon = (initialSearchTerm = '') => {
           results = results.filter(pokemon => pokemon.generation === parseInt(generation));
         }
       }
-      
       setPokemons(results);
     } catch (err) {
       setError('Erreur lors de la recherche des Pokémon: ' + err.message);
