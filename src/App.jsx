@@ -20,7 +20,6 @@ const App = () => {
     clearSearch,
   } = usePokemon('');
 
-  // Extraire les types disponibles des Pokémon actuellement affichés
   const availableTypes = [...new Set(
     pokemons.flatMap(p => p.types?.map(t => t.name) || [])
   )].sort();
