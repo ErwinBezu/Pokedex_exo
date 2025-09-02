@@ -1,8 +1,8 @@
-.type-filter-container {
-  flex: 0 0 300px;
+.generation-filter-container {
+  flex: 0 0 350px;
 }
 
-.type-filter-label {
+.generation-filter-label {
   display: block;
   font-weight: 700;
   color: #2c3e50;
@@ -11,7 +11,7 @@
   text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.type-filter-select {
+.generation-filter-select {
   width: 100%;
   padding: 16px 20px;
   border: 3px solid #d5dbdb;
@@ -31,19 +31,19 @@
   font-weight: 500;
 }
 
-.type-filter-select:focus {
+.generation-filter-select:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2), inset 0 2px 4px rgba(0,0,0,0.1);
+  border-color: #9b59b6;
+  box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.2), inset 0 2px 4px rgba(0,0,0,0.1);
   transform: translateY(-2px);
 }
 
-.type-filter-select:hover {
+.generation-filter-select:hover {
   border-color: #85929e;
   background: linear-gradient(145deg, #f8f9fa, #ffffff);
 }
 
-.type-filter-select option {
+.generation-filter-select option {
   padding: 12px;
   color: #2c3e50;
   background: white;
@@ -51,24 +51,24 @@
   font-weight: 500;
 }
 
-.type-filter-select option[value=""] {
+.generation-filter-select option[value=""] {
   font-weight: bold;
   color: #7f8c8d;
   background: #f8f9fa;
 }
 
-.type-filter-select option:hover {
-  background: #e3f2fd;
+.generation-filter-select option:hover {
+  background: #f3e5f5;
 }
 
-.type-filter-select:focus option {
-  animation: slideIn 0.3s ease;
+.generation-filter-select:focus option {
+  animation: smoothSlide 0.2s ease-out;
 }
 
-@keyframes slideIn {
+@keyframes smoothSlide {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-5px);
   }
   to {
     opacity: 1;
@@ -77,11 +77,11 @@
 }
 
 @media (max-width: 768px) {
-  .type-filter-container {
+  .generation-filter-container {
     flex: none;
   }
   
-  .type-filter-select {
+  .generation-filter-select {
     min-height: 50px;
   }
 }

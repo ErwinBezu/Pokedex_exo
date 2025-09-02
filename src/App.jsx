@@ -3,6 +3,7 @@ import './App.css'
 import List from './components/List.jsx'
 import Search from './components/Search.jsx'
 import TypeFilter from './components/TypeFilter.jsx'
+import GenerationFilter from './components/GenerationFilter.jsx'
 import LoadingSpinner from './components/LoadingSpinner.jsx'
 import useLocalStorageState from './hooks/useLocalStorageState.jsx'
 import { usePokemon } from './hooks/usePokemon.jsx'
@@ -13,10 +14,13 @@ const App = () => {
     loading,
     error,
     searchTerm,
+    selectedGeneration,
     handleSearch,
+    handleGenerationChange,
     clearSearch,
   } = usePokemon('');
 
+  // Extraire les types disponibles des Pokémon actuellement affichés
   const availableTypes = [...new Set(
     pokemons.flatMap(p => p.types?.map(t => t.name) || [])
   )].sort();
@@ -28,14 +32,18 @@ const App = () => {
     return pokemon.types?.some(type => type.name === selectedType);
   });
 
-  const handleSearchChange = (newSearchTerm) => {handleSearch(newSearchTerm);};
+  const handleSearchChange = (newSearchTerm) => {
+    handleSearch(newSearchTerm);
+  };
 
   const handleClearSearch = () => {
     clearSearch();
     setSelectedType('');
   };
 
-  const handleTypeChange = (newType) => {setSelectedType(newType);};
+  const handleTypeChange = (newType) => {
+    setSelectedType(newType);
+  };
 
   return (
     <div className="app-container">
@@ -45,6 +53,7 @@ const App = () => {
         {!loading && (
           <p className="favorites-counter">
             {filteredPokemons.length} Pokémon trouvé{filteredPokemons.length > 1 ? 's' : ''}
+            {selectedGeneration && ` • Génération ${selectedGeneration}`}
           </p>
         )}
       </div>
@@ -54,6 +63,11 @@ const App = () => {
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
           onClear={handleClearSearch}
+        />
+        
+        <GenerationFilter
+          selectedGeneration={selectedGeneration}
+          onGenerationChange={handleGenerationChange}
         />
         
         {availableTypes.length > 0 && (

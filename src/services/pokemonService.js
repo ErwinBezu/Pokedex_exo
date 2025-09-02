@@ -10,7 +10,7 @@ export const searchPokemon = async (searchTerm = "", limit = null) => {
     }
 
     if (!searchTerm.trim()) {
-      return pokemonCache.map(formatTyradexPokemon);
+      return pokemonCache.map(formatPokemon);
     }
 
     const searchLower = searchTerm.toLowerCase().trim();
@@ -23,8 +23,8 @@ export const searchPokemon = async (searchTerm = "", limit = null) => {
     });
 
     return limit
-      ? matchingPokemon.slice(0, limit).map(formatTyradexPokemon)
-      : matchingPokemon.map(formatTyradexPokemon);
+      ? matchingPokemon.slice(0, limit).map(formatPokemon)
+      : matchingPokemon.map(formatPokemon);
   } catch (error) {
     console.error("Erreur lors de la recherche:", error);
     return [];
@@ -60,14 +60,14 @@ export const getPokemonByName = async (nameOrId) => {
     }
 
     const pokemon = await response.json();
-    return formatTyradexPokemon(pokemon);
+    return formatPokemon(pokemon);
   } catch (error) {
     console.error(`Erreur lors de la récupération de ${nameOrId}:`, error);
     return null;
   }
 };
 
-const formatTyradexPokemon = (pokemon) => {
+const formatPokemon = (pokemon) => {
   return {
     id: pokemon.pokedex_id,
     name: pokemon.name?.fr || pokemon.name?.en || "Nom inconnu",
@@ -151,7 +151,7 @@ export const getPokemonByGeneration = async (generation) => {
     }
 
     const data = await response.json();
-    return data.map(formatTyradexPokemon);
+    return data.map(formatPokemon);
   } catch (error) {
     console.error(
       `Erreur lors de la récupération de la génération ${generation}:`,
