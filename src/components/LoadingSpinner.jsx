@@ -1,4 +1,4 @@
-import '../styles/LoadingSpinner.css';
+import './LoadingSpinner.css';
 
 const LoadingSpinner = ({ message = "Chargement des Pokémon..." }) => {
   return (

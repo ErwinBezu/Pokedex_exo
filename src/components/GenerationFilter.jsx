@@ -1,4 +1,4 @@
-import '../styles/GenerationFilter.css';
+import './Forms.css';
 
 const GenerationFilter = ({ selectedGeneration, onGenerationChange }) => {
   const generations = [

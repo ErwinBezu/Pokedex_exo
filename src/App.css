@@ -149,3 +149,527 @@
     padding: 20px;
   }
 }
+
+/* Styles supplémentaires pour les nouvelles pages */
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  color: #dc3545;
+  margin-bottom: 1rem;
+}
+
+.stats-info {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Navigation */
+.navigation {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-logo, .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-links {
+  gap: 1.5rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+/* Actions sur les cartes */
+.pokemon-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.action-btn {
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  transform: scale(1.1);
+}
+
+.action-btn.favorited {
+  background: #ffe6e6;
+  border-color: #ff6b6b;
+}
+
+.action-btn.captured {
+  background: #e6f3ff;
+  border-color: #4dabf7;
+}
+
+/* Page équipe */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.team-slot {
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.team-slot.filled {
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-color: #28a745;
+}
+
+.team-slot.empty {
+  background: #f8f9fa;
+  border: 2px dashed #ced4da;
+  color: #6c757d;
+}
+
+.slot-number {
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.team-pokemon-image {
+  width: 80px;
+  height: 80px;
+  margin: 1rem 0;
+}
+
+.team-pokemon-name {
+  margin: 0.5rem 0;
+  text-transform: capitalize;
+}
+
+.team-types {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.team-type-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.release-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.empty-pokeball {
+  font-size: 3rem;
+  opacity: 0.3;
+  margin: 2rem 0;
+}
+
+/* Page profil */
+.profile-header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.trainer-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.avatar-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.trainer-name-input {
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+}
+
+.trainer-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+
+.profile-sections {
+  display: grid;
+  gap: 2rem;
+}
+
+.profile-section {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-section h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.stat-icon {
+  font-size: 2rem;
+}
+
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #dc3545;
+}
+
+.stat-text {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.team-preview, .favorites-preview {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.team-member, .favorite-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  min-width: 100px;
+}
+
+.team-member-image, .favorite-image {
+  width: 60px;
+  height: 60px;
+}
+
+.team-member-name, .favorite-name {
+  font-size: 0.8rem;
+  text-align: center;
+  margin-top: 0.25rem;
+  text-transform: capitalize;
+}
+
+.history-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.history-icon {
+  font-size: 1.2rem;
+  width: 30px;
+  text-align: center;
+}
+
+.history-text {
+  flex: 1;
+}
+
+.history-date {
+  color: #666;
+  font-size: 0.8rem;
+}
+
+.danger-zone {
+  border: 2px solid #dc3545;
+  background: #fff5f5;
+}
+
+.danger-zone h2 {
+  color: #dc3545;
+}
+
+.reset-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+/* Page détail */
+.detail-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.detail-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.back-link {
+  color: #dc3545;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.detail-title {
+  color: #dc3545;
+  font-size: 2.5rem;
+  margin: 1rem 0;
+  text-transform: capitalize;
+}
+
+.detail-english-name {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.detail-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.detail-main {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.pokemon-image-section {
+  text-align: center;
+}
+
+.detail-pokemon-image {
+  width: 200px;
+  height: 200px;
+  margin-bottom: 2rem;
+}
+
+.detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detail-action-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detail-action-btn:not(.favorited):not(.captured) {
+  background: #28a745;
+  color: white;
+}
+
+.detail-action-btn.favorited {
+  background: #dc3545;
+  color: white;
+}
+
+.detail-action-btn.captured {
+  background: #6c757d;
+  color: white;
+}
+
+.info-card, .types-card, .stats-card {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.info-card h2, .types-card h2, .stats-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.info-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #666;
+}
+
+.detail-types {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.detail-type-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.stats-list {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .detail-main {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .team-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  
+  .trainer-info {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

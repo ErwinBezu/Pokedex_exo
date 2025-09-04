@@ -1,4 +1,4 @@
-import '../styles/TypeFilter.css';
+import './Forms.css';
 
 const TypeFilter = ({ selectedType, onTypeChange, availableTypes }) => {
   return (

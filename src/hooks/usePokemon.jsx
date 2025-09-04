@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { searchPokemon, getPokemonByGeneration } from '../services/pokemonService.js';
+import { searchPokemon, getPokemonByGeneration } from '../services/apiPokemon.js';
 import useLocalStorageState from './useLocalStorageState.jsx';
 
 export const usePokemon = (initialSearchTerm = '') => {
@@ -9,7 +9,7 @@ export const usePokemon = (initialSearchTerm = '') => {
   
   const [searchTerm, setSearchTerm] = useLocalStorageState('pokemonSearch', initialSearchTerm);
   const [selectedGeneration, setSelectedGeneration] = useLocalStorageState('pokemonGeneration', '');
-
+  
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ export const usePokemon = (initialSearchTerm = '') => {
           results = results.filter(pokemon => pokemon.generation === parseInt(generation));
         }
       }
+      
       setPokemons(results);
     } catch (err) {
       setError('Erreur lors de la recherche des Pokémon: ' + err.message);
@@ -49,20 +50,17 @@ export const usePokemon = (initialSearchTerm = '') => {
     fetchPokemons(debouncedSearchTerm, selectedGeneration);
   }, [debouncedSearchTerm, selectedGeneration, fetchPokemons]);
 
-  const updateSearchTerm = (term) => {setSearchTerm(term);};
-
-  const updateGeneration = (generation) => {setSelectedGeneration(generation);};
-
-  const handleSearch = (term) => {updateSearchTerm(term);};
-
-  const handleGenerationChange = (generation) => {updateGeneration(generation);};
-
+  const handleSearch = (term) => setSearchTerm(term);
+  const handleGenerationChange = (generation) => setSelectedGeneration(generation);
+  
   const clearSearch = () => {
     setSearchTerm('');
     setSelectedGeneration('');
   };
 
-  useEffect(() => {fetchPokemons(initialSearchTerm || '', selectedGeneration);}, []);
+  useEffect(() => {
+    fetchPokemons(initialSearchTerm || '', selectedGeneration);
+  }, []);
 
   return {
     pokemons,
@@ -72,7 +70,6 @@ export const usePokemon = (initialSearchTerm = '') => {
     selectedGeneration,
     handleSearch,
     handleGenerationChange,
-    updateSearchTerm,
     clearSearch,
     refetch: () => fetchPokemons(searchTerm, selectedGeneration),
   };

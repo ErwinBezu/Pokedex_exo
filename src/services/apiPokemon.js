@@ -1,4 +1,12 @@
-const BASE_URL = "https://tyradex.vercel.app/api/v1";
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "https://tyradex.vercel.app/api/v1",
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 let pokemonCache = [];
 let cacheInitialized = false;
@@ -16,9 +24,7 @@ export const searchPokemon = async (searchTerm = "", limit = null) => {
     const searchLower = searchTerm.toLowerCase().trim();
     const matchingPokemon = pokemonCache.filter((pokemon) => {
       const frenchName = pokemon.name.fr.toLowerCase();
-
       const startsWithPattern = new RegExp(`(^|\\s|-)${searchLower}`, "i");
-
       return startsWithPattern.test(frenchName);
     });
 
@@ -33,37 +39,53 @@ export const searchPokemon = async (searchTerm = "", limit = null) => {
 
 const initializePokemonCache = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/pokemon`);
+    const response = await api.get("/pokemon");
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       throw new Error(`Erreur HTTP: ${response.status}`);
     }
 
-    const data = await response.json();
-    pokemonCache = data;
+    pokemonCache = response.data;
     cacheInitialized = true;
-
     console.log(`Cache initialisé avec ${pokemonCache.length} Pokémon`);
   } catch (error) {
     console.error("Erreur lors de l'initialisation du cache:", error);
     cacheInitialized = false;
     pokemonCache = [];
+    throw error;
   }
 };
 
 export const getPokemonByName = async (nameOrId) => {
   try {
-    const response = await fetch(`${BASE_URL}/pokemon/${nameOrId}`);
+    const response = await api.get(`/pokemon/${nameOrId}`);
 
-    if (!response.ok) {
+    if (response.status !== 200) {
       return null;
     }
 
-    const pokemon = await response.json();
-    return formatPokemon(pokemon);
+    return formatPokemon(response.data);
   } catch (error) {
     console.error(`Erreur lors de la récupération de ${nameOrId}:`, error);
     return null;
+  }
+};
+
+export const getPokemonByGeneration = async (generation) => {
+  try {
+    const response = await api.get(`/gen/${generation}`);
+
+    if (response.status !== 200) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+
+    return response.data.map(formatPokemon);
+  } catch (error) {
+    console.error(
+      `Erreur lors de la récupération de la génération ${generation}:`,
+      error
+    );
+    return [];
   }
 };
 
@@ -119,7 +141,6 @@ const getTypeColor = (type) => {
     acier: "#B8B8D0",
     fée: "#EE99AC",
   };
-
   return typeColors[type] || "#68A090";
 };
 
@@ -132,31 +153,10 @@ export const getAvailableTypes = () => {
   pokemonCache.forEach((pokemon) => {
     if (pokemon.types) {
       pokemon.types.forEach((type) => {
-        if (type.name) {
-          types.add(type.name);
-        }
+        if (type.name) types.add(type.name);
       });
     }
   });
 
   return Array.from(types).sort();
-};
-
-export const getPokemonByGeneration = async (generation) => {
-  try {
-    const response = await fetch(`${BASE_URL}/gen/${generation}`);
-
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.map(formatPokemon);
-  } catch (error) {
-    console.error(
-      `Erreur lors de la récupération de la génération ${generation}:`,
-      error
-    );
-    return [];
-  }
 };

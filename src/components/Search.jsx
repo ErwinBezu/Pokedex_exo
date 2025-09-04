@@ -1,4 +1,4 @@
-import '../styles/Search.css';
+import './Forms.css';
 
 const Search = ({ searchTerm, onSearchChange, onClear }) => {
     return (
