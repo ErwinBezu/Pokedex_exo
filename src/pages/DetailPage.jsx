@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getPokemonByName } from '../services/apiPokemon';
-import { useTrainerContext } from '../context/TrainerContext';
+import usePokemonStore from '../store/pokemonStore';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { MdCatchingPokemon } from 'react-icons/md';
@@ -13,64 +13,81 @@ const DetailPage = () => {
   const [pokemon, setPokemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  const { 
-    addToFavorites, 
-    removeFromFavorites, 
-    isFavorite,
-    addToTeam,
-    removeFromTeam,
-    isInTeam 
-  } = useTrainerContext();
+
+  const addToFavorites     = usePokemonStore(s => s.addToFavorites);
+  const removeFromFavorites= usePokemonStore(s => s.removeFromFavorites);
+  const isFavoriteFn       = usePokemonStore(s => s.isFavorite);
+  const addToTeam          = usePokemonStore(s => s.addToTeam);
+  const removeFromTeam     = usePokemonStore(s => s.removeFromTeam);
+  const isInTeamFn         = usePokemonStore(s => s.isInTeam);
 
   useEffect(() => {
+    let alive = true;
     const loadPokemon = async () => {
       try {
         setLoading(true);
-        const data = await getPokemonByName(id);
+        setError(null);
+        const data = await getPokemonByName(id); // si c'est un id, OK si ton service accepte id/nom
+        if (!alive) return;
         if (data) {
           setPokemon(data);
         } else {
-          setError('Pokemon non trouve');
+          setError('Pokemon non trouvé');
         }
       } catch (err) {
-        setError('Erreur lors du chargement du Pokemon', err);
+        setError('Erreur lors du chargement du Pokémon');
+        console.log(err);
       } finally {
-        setLoading(false);
+        if (alive) setLoading(false);
       }
     };
-
     loadPokemon();
+    return () => { alive = false; };
   }, [id]);
 
-  const handleFavoriteClick = () => {
-    if (isFavorite(pokemon.id)) {
+  const isFavorite = useMemo(
+    () => (pokemon ? isFavoriteFn(pokemon.id) : false),
+    [pokemon, isFavoriteFn]
+  );
+  const isInTeam = useMemo(
+    () => (pokemon ? isInTeamFn(pokemon.id) : false),
+    [pokemon, isInTeamFn]
+  );
+
+  const handleFavoriteClick = useCallback(() => {
+    if (!pokemon) return;
+    if (isFavorite) {
       removeFromFavorites(pokemon.id);
     } else {
       addToFavorites(pokemon);
     }
-  };
+  }, [pokemon, isFavorite, addToFavorites, removeFromFavorites]);
 
-  const handleCaptureClick = () => {
-    if (isInTeam(pokemon.id)) {
+  const handleCaptureClick = useCallback(() => {
+    if (!pokemon) return;
+    if (isInTeam) {
       removeFromTeam(pokemon.id);
     } else {
       const success = addToTeam(pokemon);
       if (!success) {
-        alert('Votre equipe est complete ! (6 Pokemon maximum)');
+        alert('Votre équipe est complète ! (6 Pokémon maximum)');
       }
     }
-  };
+  }, [pokemon, isInTeam, addToTeam, removeFromTeam]);
 
   if (loading) return <LoadingSpinner />;
   if (error) return <div className="error-page">{error}</div>;
-  if (!pokemon) return <div className="error-page">Pokemon non trouve</div>;
+  if (!pokemon) return <div className="error-page">Pokemon non trouvé</div>;
+
+  const safeStats = pokemon.stats || {};
+  const types = pokemon.types || [];
+  const formatPct = (v) => `${Math.min(((v || 0) / 150) * 100, 100)}%`;
 
   return (
     <div className="detail-page">
       <div className="detail-header">
         <Link to="/" className="back-link">
-          <BiArrowBack /> Retour a la liste
+          <BiArrowBack /> Retour à la liste
         </Link>
         <h1 className="detail-title">
           #{pokemon.id.toString().padStart(3, '0')} {pokemon.name}
@@ -83,18 +100,22 @@ const DetailPage = () => {
       <div className="detail-content">
         <div className="detail-main">
           <div className="pokemon-image-section">
-            <img 
-              src={pokemon.image} 
+            <img
+              src={pokemon.image}
               alt={pokemon.name}
               className="detail-pokemon-image"
+              onError={(e) => {
+                e.currentTarget.src = `https://via.placeholder.com/256x256/f0f0f0/666?text=${pokemon.name}`;
+              }}
             />
-            
+
             <div className="detail-actions">
-              <button 
+              <button
                 onClick={handleFavoriteClick}
-                className={`detail-action-btn ${isFavorite(pokemon.id) ? 'favorited' : ''}`}
+                className={`detail-action-btn ${isFavorite ? 'favorited' : ''}`}
+                disabled={!pokemon}
               >
-                {isFavorite(pokemon.id) ? (
+                {isFavorite ? (
                   <>
                     <AiFillHeart /> Retirer des favoris
                   </>
@@ -104,14 +125,15 @@ const DetailPage = () => {
                   </>
                 )}
               </button>
-              
-              <button 
+
+              <button
                 onClick={handleCaptureClick}
-                className={`detail-action-btn ${isInTeam(pokemon.id) ? 'captured' : ''}`}
+                className={`detail-action-btn ${isInTeam ? 'captured' : ''}`}
+                disabled={!pokemon}
               >
-                {isInTeam(pokemon.id) ? (
+                {isInTeam ? (
                   <>
-                    <BiPackage /> Liberer
+                    <BiPackage /> Libérer
                   </>
                 ) : (
                   <>
@@ -124,10 +146,10 @@ const DetailPage = () => {
 
           <div className="pokemon-info-section">
             <div className="info-card">
-              <h2>Informations generales</h2>
+              <h2>Informations générales</h2>
               <div className="info-grid">
                 <div className="info-item">
-                  <span className="info-label">Categorie :</span>
+                  <span className="info-label">Catégorie :</span>
                   <span className="info-value">{pokemon.category}</span>
                 </div>
                 <div className="info-item">
@@ -139,7 +161,7 @@ const DetailPage = () => {
                   <span className="info-value">{pokemon.weight}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">Generation :</span>
+                  <span className="info-label">Génération :</span>
                   <span className="info-value">{pokemon.generation}</span>
                 </div>
               </div>
@@ -148,15 +170,15 @@ const DetailPage = () => {
             <div className="types-card">
               <h2>Types</h2>
               <div className="detail-types">
-                {pokemon.types.map((type, index) => (
-                  <span 
-                    key={index} 
+                {types.length ? types.map((type, index) => (
+                  <span
+                    key={index}
                     className="detail-type-badge"
                     style={{ backgroundColor: type.color }}
                   >
                     {type.name}
                   </span>
-                ))}
+                )) : <span className="detail-type-badge">Inconnu</span>}
               </div>
             </div>
 
@@ -166,73 +188,55 @@ const DetailPage = () => {
                 <div className="stat-row">
                   <span className="stat-name">PV</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar hp"
-                      style={{ width: `${Math.min((pokemon.stats.hp / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar hp" style={{ width: formatPct(safeStats.hp) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.hp}</span>
+                  <span className="stat-number">{safeStats.hp ?? '-'}</span>
                 </div>
-                
+
                 <div className="stat-row">
                   <span className="stat-name">Attaque</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar attack"
-                      style={{ width: `${Math.min((pokemon.stats.attack / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar attack" style={{ width: formatPct(safeStats.attack) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.attack}</span>
+                  <span className="stat-number">{safeStats.attack ?? '-'}</span>
                 </div>
-                
+
                 <div className="stat-row">
-                  <span className="stat-name">Defense</span>
+                  <span className="stat-name">Défense</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar defense"
-                      style={{ width: `${Math.min((pokemon.stats.defense / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar defense" style={{ width: formatPct(safeStats.defense) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.defense}</span>
+                  <span className="stat-number">{safeStats.defense ?? '-'}</span>
                 </div>
-                
+
                 <div className="stat-row">
-                  <span className="stat-name">Att. Speciale</span>
+                  <span className="stat-name">Att. Spéciale</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar special-attack"
-                      style={{ width: `${Math.min((pokemon.stats.specialAttack / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar special-attack" style={{ width: formatPct(safeStats.specialAttack) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.specialAttack}</span>
+                  <span className="stat-number">{safeStats.specialAttack ?? '-'}</span>
                 </div>
-                
+
                 <div className="stat-row">
-                  <span className="stat-name">Def. Speciale</span>
+                  <span className="stat-name">Déf. Spéciale</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar special-defense"
-                      style={{ width: `${Math.min((pokemon.stats.specialDefense / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar special-defense" style={{ width: formatPct(safeStats.specialDefense) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.specialDefense}</span>
+                  <span className="stat-number">{safeStats.specialDefense ?? '-'}</span>
                 </div>
-                
+
                 <div className="stat-row">
                   <span className="stat-name">Vitesse</span>
                   <div className="stat-bar-container">
-                    <div 
-                      className="stat-bar speed"
-                      style={{ width: `${Math.min((pokemon.stats.speed / 150) * 100, 100)}%` }}
-                    ></div>
+                    <div className="stat-bar speed" style={{ width: formatPct(safeStats.speed) }} />
                   </div>
-                  <span className="stat-number">{pokemon.stats.speed}</span>
+                  <span className="stat-number">{safeStats.speed ?? '-'}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </div>  
     </div>
   );
 };

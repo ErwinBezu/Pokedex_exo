@@ -1,11 +1,12 @@
-import { useTrainerContext } from '../context/TrainerContext';
+import usePokemonStore from '../store/pokemonStore';
 import List from '../components/List';
 import './Pages.css';
 
 const FavoritesPage = () => {
-  const { favorites, stats } = useTrainerContext();
-  
-  if (favorites.length === 0) {
+  const favorites = usePokemonStore(s => s.favorites);
+  const totalFavorites = favorites.length;
+
+  if (totalFavorites === 0) {
     return (
       <div className="page-container">
         <div className="page-header">
@@ -16,16 +17,16 @@ const FavoritesPage = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="page-container">
       <div className="page-header">
         <h1>Mes Pokémons Favoris</h1>
         <p className="stats-info">
-          {stats.totalFavorites} Pokémon{stats.totalFavorites > 1 ? 's' : ''} en favoris
+          {totalFavorites} Pokémon{totalFavorites > 1 ? 's' : ''} en favoris
         </p>
       </div>
-      
+
       <List pokemons={favorites} />
     </div>
   );

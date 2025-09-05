@@ -1,4 +1,4 @@
-import { useTrainerContext } from '../context/TrainerContext';
+import usePokemonStore from '../store/pokemonStore';
 import { 
   AiOutlineBarChart,
   AiFillHeart,
@@ -17,15 +17,20 @@ import { BiPackage } from 'react-icons/bi';
 import './Pages.css';
 
 const ProfilePage = () => {
-  const { 
-    trainerName, 
-    setTrainerName, 
-    stats, 
-    history, 
-    resetTrainerData,
-    team,
-    favorites 
-  } = useTrainerContext();
+  // ⬇️ Ne sélectionner que ce qui est nécessaire
+  const trainerName      = usePokemonStore(s => s.trainerName);
+  const setTrainerName   = usePokemonStore(s => s.setTrainerName);
+  const history          = usePokemonStore(s => s.history);
+  const resetTrainerData = usePokemonStore(s => s.resetTrainerData);
+  const team             = usePokemonStore(s => s.team);
+  const favorites        = usePokemonStore(s => s.favorites);
+
+  // ⬇️ Stats dérivées localement (plus besoin de state.stats)
+  const totalCaptured  = team.length;
+  const totalFavorites = favorites.length;
+  const trainerLevel   = Math.floor(totalCaptured / 2) + 1;
+  const badges         = Math.floor(totalCaptured / 3);
+  const totalActions   = history.length;
 
   const handleNameChange = (e) => {
     setTrainerName(e.target.value);
@@ -48,9 +53,9 @@ const ProfilePage = () => {
   const getActionText = (action) => {
     const texts = {
       capture: 'Capture',
-      release: 'Libere', 
-      favorite: 'Ajoute aux favoris',
-      unfavorite: 'Retire des favoris'
+      release: 'Libéré', 
+      favorite: 'Ajouté aux favoris',
+      unfavorite: 'Retiré des favoris'
     };
     return texts[action] || action;
   };
@@ -63,7 +68,7 @@ const ProfilePage = () => {
         <div className="trainer-info">
           <div className="trainer-avatar">
             <div className="avatar-circle">
-              {trainerName.charAt(0).toUpperCase()}
+              {trainerName?.charAt(0)?.toUpperCase() || 'D'}
             </div>
           </div>
           
@@ -83,11 +88,11 @@ const ProfilePage = () => {
             <div className="trainer-stats">
               <div className="stat-item">
                 <span className="stat-label">Niveau</span>
-                <span className="stat-value">{stats.trainerLevel}</span>
+                <span className="stat-value">{trainerLevel}</span>
               </div>
               <div className="stat-item">
                 <span className="stat-label">Badges</span>
-                <span className="stat-value">{stats.badges}</span>
+                <span className="stat-value">{badges}</span>
               </div>
             </div>
           </div>
@@ -101,15 +106,15 @@ const ProfilePage = () => {
             <div className="stat-card">
               <div className="stat-icon"><MdCatchingPokemon /></div>
               <div className="stat-content">
-                <div className="stat-number">{stats.totalCaptured}</div>
-                <div className="stat-text">Pokemon captures</div>
+                <div className="stat-number">{totalCaptured}</div>
+                <div className="stat-text">Pokémon capturés</div>
               </div>
             </div>
             
             <div className="stat-card">
               <div className="stat-icon"><AiFillHeart /></div>
               <div className="stat-content">
-                <div className="stat-number">{stats.totalFavorites}</div>
+                <div className="stat-number">{totalFavorites}</div>
                 <div className="stat-text">Favoris</div>
               </div>
             </div>
@@ -117,7 +122,7 @@ const ProfilePage = () => {
             <div className="stat-card">
               <div className="stat-icon"><AiOutlineTrophy /></div>
               <div className="stat-content">
-                <div className="stat-number">{stats.badges}</div>
+                <div className="stat-number">{badges}</div>
                 <div className="stat-text">Badges obtenus</div>
               </div>
             </div>
@@ -125,7 +130,7 @@ const ProfilePage = () => {
             <div className="stat-card">
               <div className="stat-icon"><AiOutlineFileText /></div>
               <div className="stat-content">
-                <div className="stat-number">{stats.totalActions}</div>
+                <div className="stat-number">{totalActions}</div>
                 <div className="stat-text">Actions totales</div>
               </div>
             </div>
@@ -133,7 +138,7 @@ const ProfilePage = () => {
         </section>
 
         <section className="profile-section">
-          <h2><AiOutlineTeam /> Equipe actuelle</h2>
+          <h2><AiOutlineTeam /> Équipe actuelle</h2>
           {team.length > 0 ? (
             <div className="team-preview">
               {team.map((pokemon) => (
@@ -142,18 +147,21 @@ const ProfilePage = () => {
                     src={pokemon.image} 
                     alt={pokemon.name}
                     className="team-member-image"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://via.placeholder.com/96x96/f0f0f0/666?text=${pokemon.name}`;
+                    }}
                   />
                   <span className="team-member-name">{pokemon.name}</span>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="empty-message">Aucun Pokemon dans l'equipe</p>
+            <p className="empty-message">Aucun Pokémon dans l’équipe</p>
           )}
         </section>
 
         <section className="profile-section">
-          <h2><AiOutlineStar /> Pokemon favoris</h2>
+          <h2><AiOutlineStar /> Pokémon favoris</h2>
           {favorites.length > 0 ? (
             <div className="favorites-preview">
               {favorites.slice(0, 6).map(pokemon => (
@@ -162,6 +170,9 @@ const ProfilePage = () => {
                     src={pokemon.image} 
                     alt={pokemon.name}
                     className="favorite-image"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://via.placeholder.com/80x80/f0f0f0/666?text=${pokemon.name}`;
+                    }}
                   />
                   <span className="favorite-name">{pokemon.name}</span>
                 </div>
@@ -173,12 +184,12 @@ const ProfilePage = () => {
               )}
             </div>
           ) : (
-            <p className="empty-message">Aucun Pokemon en favoris</p>
+            <p className="empty-message">Aucun Pokémon en favoris</p>
           )}
         </section>
 
         <section className="profile-section">
-          <h2><MdHistory /> Historique recent</h2>
+          <h2><MdHistory /> Historique récent</h2>
           {history.length > 0 ? (
             <div className="history-list">
               {history.slice(0, 10).map((entry, index) => (
@@ -203,23 +214,23 @@ const ProfilePage = () => {
               )}
             </div>
           ) : (
-            <p className="empty-message">Aucune action enregistree</p>
+            <p className="empty-message">Aucune action enregistrée</p>
           )}
         </section>
 
         <section className="profile-section danger-zone">
           <h2><MdWarning /> Zone de danger</h2>
-          <p>Cette action supprimera toutes vos donnees (equipe, favoris, historique).</p>
+          <p>Cette action supprimera toutes vos données (équipe, favoris, historique).</p>
           <button 
             onClick={() => {
-              if (window.confirm('Etes-vous sur de vouloir tout supprimer ? Cette action est irreversible.')) {
+              if (window.confirm('Êtes-vous sûr de vouloir tout supprimer ? Cette action est irréversible.')) {
                 resetTrainerData();
-                alert('Donnees supprimees avec succes !');
+                alert('Données supprimées avec succès !');
               }
             }}
             className="reset-btn"
           >
-            <AiOutlineDelete /> Tout reinitialiser
+            <AiOutlineDelete /> Tout réinitialiser
           </button>
         </section>
       </div>
